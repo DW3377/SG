@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  background: #83AF9B;
+  font-family: sans-serif;
+}
+
+.toggle-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.toggle-btn.open {
+  transform: rotate(45deg);
+}
+
+.gallery {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+}
+.gallery.open {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.item {
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+  text-align: center;
+  width: 130px;
+  transition: transform 0.5s ease;
+}
+.item img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+.item::after {
+  content: attr(data-caption);
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+  color: #333;
+}
+
+.add-btn {
+  margin-top: 5px;
+  background: #ff9800;
+  border: none;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#cart {
+  margin-top: 30px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+
+<div class="toggle-btn" id="toggle">+</div>
+
+<div class="gallery" id="gallery">
+  <div class="item" data-caption="Forest Apocalypse">
+    <img src="https://picsum.photos/id/1028/300/300" alt="Forest Apocalypse">
+    <button class="add-btn" onclick="addToCart('Forest Apocalypse')">Add to Cart</button>
+  </div>
+  <div class="item" data-caption="Waterfall Rocks">
+    <img src="https://picsum.photos/id/15/300/300" alt="Waterfall Rocks">
+    <button class="add-btn" onclick="addToCart('Waterfall Rocks')">Add to Cart</button>
+  </div>
+  <div class="item" data-caption="Mountain House">
+    <img src="https://picsum.photos/id/1040/300/300" alt="Mountain House">
+    <button class="add-btn" onclick="addToCart('Mountain House')">Add to Cart</button>
+  </div>
+</div>
+
+<div id="cart">
+  <h3>🛒 Cart</h3>
+  <ul id="cart-items"></ul>
+  <p id="cart-total">Total items: 0</p>
+  <button onclick="clearCart()">Clear Cart</button>
+  <button onclick="confirmAndEmail()">Confirm & Email</button>
+</div>
+
+<script>
+let cartCount = 0;
+const toggleBtn = document.getElementById("toggle");
+const gallery = document.getElementById("gallery");
+
+toggleBtn.addEventListener("click", () => {
+  gallery.classList.toggle("open");
+  toggleBtn.classList.toggle("open");
+});
+
+function addToCart(itemName) {
+  const cartList = document.getElementById("cart-items");
+  const li = document.createElement("li");
+  li.textContent = itemName;
+  cartList.appendChild(li);
+  cartCount++;
+  document.getElementById("cart-total").textContent = "Total items: " + cartCount;
+}
+
+function clearCart() {
+  document.getElementById("cart-items").innerHTML = "";
+  cartCount = 0;
+  document.getElementById("cart-total").textContent = "Total items: 0";
+}
+
+function confirmAndEmail() {
+  const cartItems = document.querySelectorAll("#cart-items li");
+  if (cartItems.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  let itemsText = "";
+  cartItems.forEach(item => {
+    itemsText += "- " + item.textContent + "\n";
+  });
+
+  const email = "delightfuld7777@gmail.com"; // <-- Replace with your specific email
+  const subject = "Cart Confirmation";
+  const body = "Here are the items in my cart:\n\n" + itemsText + "\nTotal items: " + cartCount;
+
+  // Opens the user's email client with pre-filled subject & body
+  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+</script>
+
+</body>
+</html>
